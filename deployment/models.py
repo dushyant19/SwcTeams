@@ -37,6 +37,7 @@ class Configs(models.Model):
     key = models.CharField(max_length=100)
     value = models.CharField(max_length=300)
     project = models.ForeignKey(Project,related_name='config_vars',on_delete=models.CASCADE)
+    is_private = models.BooleanField(default=False)
 
     def __str__(self):
         return f'[{self.key},{self.value}]'
