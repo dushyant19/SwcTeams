@@ -1,0 +1,90 @@
+version: "3.8"
+
+services:
+  postgres:
+    restart: unless-stopped
+    container_name: <project>_db
+    image: postgres
+    environment:
+      - POSTGRES_DB=<project>
+      - POSTGRES_USER=<project>
+      - POSTGRES_PASSWORD=<project>
+    volumes: 
+        - <project>_pgdata:/var/lib/postgresql/data
+
+  redis :
+    restart: unless-stopped
+    image : redis:alpine
+    container_name: <project>_cache
+    expose :
+      - 6379
+
+  web:
+    restart: unless-stopped
+    build: .
+    container_name: <project>_web
+    image : <project>/web
+    command: sh -c "/entrypoint_django"
+    volumes:
+      - ./src/static:/code/static
+      - ./src/media:/code/media
+    expose:
+      - "8000"
+    env_file: 
+      - "./env"
+    environment:
+      - DATABASE_HOST=<project>_db
+      - DATABASE_USER=<project>
+      - DATABASE_PASSWORD=<project>
+      - WAIT_HOSTS=<project>_db:5432
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+      - VIRTUAL_HOST=localhost
+      - VIRTUAL_PORT=8000
+      - VIRTUAL_PATH=/<project>
+      - VIRTUAL_PROTO=http
+#     - lETSENCRYPT_EMAIL=
+#     - LETSENCRYPT_HOST=
+
+
+  celery-beat:
+    restart: unless-stopped
+    image : <project>/web
+    command: sh -c "/entrypoint_beat"
+    env_file: 
+      - "./env"
+    environment:
+      - DATABASE_HOST=<project>_db
+      - DATABASE_USER=<project>
+      - DATABASE_PASSWORD=<project>
+      - REDIS_HOST=<project>_cache
+      - REDIS_PORT=6379
+      - WAIT_HOSTS=<project>_web:8000,<project>_cache:6379
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+
+  celery_worker:
+    restart: unless-stopped
+    image : <project>/web
+    command: sh -c "/entrypoint_worker"
+    env_file: 
+      - "./env"
+    environment:
+      - DATABASE_HOST=<project>_db
+      - DATABASE_USER=<project>
+      - DATABASE_PASSWORD=<project>
+      - REDIS_HOST=<project>_cache
+      - REDIS_PORT=6379
+      - WAIT_HOSTS=<project>_web:8000,<project>_cache:6379
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
+
+volumes:
+ <project>_pgdata:
+
+networks: 
+  external: 
+    nginx-proxy:
