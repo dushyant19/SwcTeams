@@ -2,10 +2,13 @@ from django.db import models
 from accounts.models import CustomUser
 
 # Create your models here.
+class Framework(models.Model):
+    name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=150)
 
 class Project(models.Model):
-    admin = models.ForeignKey(CustomUser,related_name='projects',on_delete=models.CASCADE)
-    memebers = models.ManyToManyField(CustomUser)
+    created_by = models.ForeignKey(CustomUser,related_name='projects',on_delete=models.CASCADE)
+    members = models.ManyToManyField(CustomUser)
     project_name = models.CharField(max_length=200,unique=True)
     domain = models.URLField(unique=True)
     platform = models.CharField(max_length=255)
@@ -15,6 +18,14 @@ class Project(models.Model):
     database_configured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    project_build_version = models.IntegerField(default=0)
+    project_description = models.TextField(unique=True)
+    project_image = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=150)
+    sentry_url = models.URLField(max_length=200)
+    platforms = models.OneToOneField(to=Framework, on_delete=models.CASCADE, parent_link=False)
+
+
+
 
     def __str__(self):
         return self.project_name
@@ -41,4 +52,12 @@ class Configs(models.Model):
 
     def __str__(self):
         return f'[{self.key},{self.value}]'
+
+class Service(models.Model):
+    service_defaults = models.ForeignKey(to=Framework, related_name='services', on_delete=models.CASCADE)
+    service_name = models.CharField(max_length=100)
+    service_settings = models.JSONField(default=dict)
+    projects = models.ManyToManyField(Project, related_name='services')
+
+
 
