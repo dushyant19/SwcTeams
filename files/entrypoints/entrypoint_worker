@@ -1,0 +1,3 @@
+#!/bin/sh
+sh /wait
+celery -A core worker -l info

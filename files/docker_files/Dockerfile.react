@@ -1,0 +1,16 @@
+FROM node:12.13.0-alpine AS builder
+
+RUN apk --no-cache add python make g++ curl bash
+
+COPY . .
+WORKDIR /src
+RUN yarn install && yarn run build
+
+
+RUN rm -rf node_modules && yarn install --production
+
+
+FROM node:12.13.0-alpine AS sever
+COPY --from=builder /src/build /code
+RUN yarn install -g serve
+WORKDIR /code
