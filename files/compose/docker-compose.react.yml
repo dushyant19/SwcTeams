@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
- web:
+  web:
     build: .
     image: node:12.13.0-alpine
     container_name: <project>_web
@@ -11,15 +11,15 @@ services:
       - 3000
     volumes:
       - .:/code
-    command : serve
-    environment: 
+    command: serve
+    environment:
       - VIRTUAL_HOST=localhost
-      - VIRTUAL_PORT=8000
+      - VIRTUAL_PORT=3000
       - VIRTUAL_PATH=/<project>
       - VIRTUAL_PROTO=http
 #     - lETSENCRYPT_EMAIL=
 #     - LETSENCRYPT_HOST=
-      
-networks: 
-  external: 
+
+networks:
+  external:
     nginx-proxy:

@@ -37,6 +37,10 @@ services:
       - VIRTUAL_PORT=3000
       - VIRTUAL_PATH=/<project>
       - VIRTUAL_PROTO=http
+      - WAIT_HOSTS=<project>_db:5432
+      - WAIT_HOSTS_TIMEOUT=300
+      - WAIT_SLEEP_INTERVAL=30
+      - WAIT_HOST_CONNECT_TIMEOUT=30
 #     - lETSENCRYPT_EMAIL=
 #     - LETSENCRYPT_HOST=
     expose:
