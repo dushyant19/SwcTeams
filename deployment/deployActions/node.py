@@ -19,6 +19,9 @@ def get_project_conf(project):
     }
 
 
+def run_project(project):
+  
+
 # def save_configurations(project, env):
 #   dockerfilename = env.projectDir + "/Dockerfile"
   
@@ -99,6 +102,7 @@ def get_project_conf(project):
 #   project.port = port
 #   project.save()
 #   return setup
+  pass
 
 
 def parse_docker_compose(project,docker_compose):
