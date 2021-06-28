@@ -19,92 +19,6 @@ def get_project_conf(project):
     }
 
 
-def run_project(project):
-  
-
-# def save_configurations(project, env):
-#   dockerfilename = env.projectDir + "/Dockerfile"
-  
-#   setup = [
-#     {
-#       "command": {
-#         "run": f"touch ${env.projectDir}/src/.env",
-#       },
-#       "name": "make .env file",
-#     },
-#   ]
-
-  # for config in project.config_vars.all() {
-  #   setup.append{
-  #     "command": {
-  #       "run":"echo " +config.key +
-  #         "=" +
-  #         config.value +
-  #         f">> {env.projectDir}/src/.env",
-  #     },
-  #     "name": "make values to .env",
-  #   })
-  # }
-
-  # return setup
-
-
-
-# def docker_setup(project,env):
-#     dockerfilename = env.projectDir + "/Dockerfile"
-#     dockerignorefile = env.projectDir + "/.dockerignore"
-#     setup = [
-#         {
-#         "command": {
-#             "run": f"cp ./docker_config/docker_node/Dockerfile ${dockerfilename}",
-#         },
-#         "name": "copy docker file",
-#         },
-#         {
-#         "command": {
-#             "run": f"cp ./docker_config/docker_node/.dockerignore ${dockerignorefile}",
-#         },
-#         "name": "copy docker file",
-#         },
-#     ]
-
-#     return setup
-
-# def docker_build(project, env):
-#   total = Project.objects.count()
-#   port = 3000 + total
-#   linked_containers = ""
-#   for db in project.databases.all():
-#     linked_containers += f"--link ${db.containername}"
-  
-
-#   setup = [
-#     {
-#       "command": {
-#         "run": f"cd {env.projectDir} && {
-#           docker_commands["dockerBuildContext"](
-#             project.version + ".0",
-#             project.name.toLowerCase() + "/test"
-#           )["run"]
-#         }",
-#         "revert": docker_commands["remove"]("image", project.name)["run"],
-#       },
-#       name: "docker build image",
-#     },
-#     {
-#       "command": docker_commands["dockerRun"](
-#         f"-i --rm  --env-file {env.projectDir}/src/.env --name ${project.name.toLowerCase()} -p ${port}:3000 {project.name.toLowerCase()}/test:{project.version}.0 node /usr/src/app/src/{env.mainfile}"
-#       ),
-#       name: "docker run",
-#     },
-#   ]
-
-#   project.port = port
-#   project.save()
-#   return setup
-  pass
-
-
 def parse_docker_compose(project,docker_compose):
   env = get_project_conf(project)
   global_docker_compose = open(docker_compose,'r')
@@ -145,9 +59,23 @@ def add_docker_file(project):
   copy_docker_file(project,dockerfile)
 
   
-  
+def containers_setup(project):
+  env=get_project_conf(project)
+  configured_services = " ".join(project.configured_service)
+
+  return [{
+    "command":docker_commands["docker_compose"](env.project_dir,configured_services),
+    "name":"Spinning up the docker containers"
+  }]
 
 
+def add_container_entrypoints():
+  return [{
+    "command":{
+      "run":f"cp files/entrypoints/* ${env.project_dir}"
+    },
+    "name":"Copyinng all the entrypoints inside the project dir"
+  }]
 
 
 
@@ -175,33 +103,16 @@ def performintialsetup(project):
               "run":f"rm -rf {env.projectdir}"
           }
       })
+      #==================== ADD ALL THE NECCESSARY DOCKER FILES TO PROJECT DIR ===========================#
+      run_multiple(setup,"===================BASIC FILE SETUP ====================",cb)
+      run_multiple(containers_setup(project),"================== CONTAINERS SETUP =====================",cb)
+      run_multiple(add_container_entrypoints(),"================== CONTAINERS SETUP =====================",cb)
       
-      ##Perform intial setup
-      run_multiple(setup,"==============BASIC SETUP============",cb,fallback_arr)
-      ##Create docker container
-      # run_multiple(docker_setup(project,env),"==============DOCKER SETUP============",cb,fallback_arr)
       add_docker_file(project)
     except Exception as e:
       repr(e)
       run_multiple(fallback_arr,"===================Revert changes====================",cb)
 
-        
-def deploy (project):
-    env = getprojectEnv(project)
-    fallback_arr = []
-    try : 
-      run_multiple(
-          saveconfigurations(project, env),
-          "================UPDATE/CREATE ENV==================",
-          cb,
-          fallback_arr
-      )
-      run_multiple(
-          docker_build(project, env),
-          "====================DOCKER BUILD=====================",
-          cb,
-          fallback_arr
-      )
-    except Exception as e:
-      repr(e)
-      run_multiple(fallback_arr,"===================Revert changes====================",cb)
+
+def redeploy(project):
+  pass
