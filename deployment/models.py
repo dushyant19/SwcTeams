@@ -8,7 +8,7 @@ class Framework(models.Model):
 
 class Project(models.Model):
     created_by = models.ForeignKey(CustomUser,related_name='projects',on_delete=models.CASCADE)
-    members = models.ManyToManyField(CustomUser)
+    members = models.ManyToManyField(CustomUser,on_delete=models.CASCADE)
     project_name = models.CharField(max_length=200,unique=True)
     domain = models.URLField(unique=True)
     platform = models.CharField(max_length=255)
@@ -17,19 +17,19 @@ class Project(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     project_build_version = models.IntegerField(default=0)
-    project_description = models.TextField(unique=True)
+    project_description = models.TextField()
     project_image = models.ImageField(upload_to="/projects", max_length=150)
-    sentry_url = models.URLField(max_length=200)
-    platforms = models.OneToOneField(to=Framework, on_delete=models.CASCADE, parent_link=False)
+    sentry_url = models.URLField(max_length=200,unique=True)
+    platforms = models.OneToOneField(Framework, on_delete=models.CASCADE, parent_link=False) # what is this
 
     def __str__(self):
         return self.project_name
 
 
 class Service(models.Model):
-    service_defaults = models.ForeignKey(to=Framework, related_name='services', on_delete=models.CASCADE)
-    service_name = models.CharField(max_length=100)
-    service_settings = models.JSONField(default=dict)
+    service_defaults = models.ForeignKey(Framework, related_name='services', on_delete=models.CASCADE)
+    service_name = models.CharField(max_length=100) # shouldn't it be a choice field
+    service_settings = models.JSONField(default=dict) # where is th dict
     projects = models.ManyToManyField(Project, related_name='services')
 
 

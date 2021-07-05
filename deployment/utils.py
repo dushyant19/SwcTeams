@@ -5,6 +5,7 @@ def cb(err,name,data=""):
         print(f"Error in {name}\n")
         raise Exception(err)
     print(f"Success in {name}")
+    return data
 
 
 def run_command(command,commandname,cb,fallback):
