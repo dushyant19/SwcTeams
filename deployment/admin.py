@@ -3,5 +3,5 @@ from .models import *
 # Register your models here.
 
 admin.site.register(Project)
-admin.site.register(Database)
-admin.site.register(Configs)
+admin.site.register(Service)
+admin.site.register(Framework)
