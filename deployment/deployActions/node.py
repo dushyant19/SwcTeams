@@ -80,7 +80,7 @@ def add_container_entrypoints(project):
 
 
 
-def performintialsetup(project):
+def performinitialsetup(project):
     env=get_project_conf(project)
     setup=[
         {
