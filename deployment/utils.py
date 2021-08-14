@@ -11,7 +11,7 @@ def run_command(command,commandname,cb,fallback):
     print(f"Running {command.run} {commandname}")
     output = subprocess.run(command.run,shell=True,capture_output=True,text=True)
     if(output.returncode==0):
-        if command.revert:
+        if "revert" in command.key():
             fallback.append({
                 'command':{
                     'run':command.revert,
