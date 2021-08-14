@@ -4,55 +4,52 @@ services:
   # redis :
   #   restart: unless-stopped
   #   image : redis:alpine
-  #   container_name: <project>_cache
+  #   container_name: teams_cache
   #   expose :
   #     - 6379
 
   web:
     restart: unless-stopped
     build: .
-    container_name: <project>_web
-    image: <project>/web
+    container_name: teams_web
+    image: teams/web
     command: sh -c "/entrypoint_django"
-    volumes:
-      - ./src/static:/code/static
-      - ./src/media:/code/media
     expose:
       - "8000"
     env_file:
       - "./.env"
-    environment:
-      - VIRTUAL_HOST=localhost
-      - VIRTUAL_PORT=8000
-      - VIRTUAL_PATH=/<project>
-      - VIRTUAL_PROTO=http
+    # environment:
+    #   - VIRTUAL_HOST=localhost
+    #   - VIRTUAL_PORT=8000
+    #   - VIRTUAL_PATH=/teams
+    #   - VIRTUAL_PROTO=http
 #     - lETSENCRYPT_EMAIL=
 #     - LETSENCRYPT_HOST=
 
 # celery-beat:
 #   restart: unless-stopped
-#   image : <project>/web
+#   image : teams/web
 #   command: sh -c "/entrypoint_beat"
 #   env_file:
 #     - "./env"
 #   environment:
-#     - REDIS_HOST=<project>_cache
+#     - REDIS_HOST=teams_cache
 #     - REDIS_PORT=6379
-#     - WAIT_HOSTS=<project>_web:8000,<project>_cache:6379
+#     - WAIT_HOSTS=teams_web:8000,teams_cache:6379
 #     - WAIT_HOSTS_TIMEOUT=300
 #     - WAIT_SLEEP_INTERVAL=30
 #     - WAIT_HOST_CONNECT_TIMEOUT=30
 
 # celery_worker:
 #   restart: unless-stopped
-#   image : <project>/web
+#   image : teams/web
 #   command: sh -c "/entrypoint_worker"
 #   env_file:
 #     - "./env"
 #   environment:
-#     - REDIS_HOST=<project>_cache
+#     - REDIS_HOST=teams_cache
 #     - REDIS_PORT=6379
-#     - WAIT_HOSTS=<project>_web:8000,<project>_cache:6379
+#     - WAIT_HOSTS=teams_web:8000,teams_cache:6379
 #     - WAIT_HOSTS_TIMEOUT=300
 #     - WAIT_SLEEP_INTERVAL=30
 #     - WAIT_HOST_CONNECT_TIMEOUT=30

@@ -9,13 +9,14 @@ def cb(err,name,data=""):
 
 
 def run_command(command,commandname,cb,fallback):
-    print(f"Running {command.run} {commandname}")
-    output = subprocess.run(command.run,shell=True,capture_output=True,text=True)
+    command_sh= command["run"]
+    print(f"Running {command_sh} {commandname}")
+    output = subprocess.run(command_sh,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if(output.returncode==0):
-        if "revert" in command.key():
+        if "revert" in command.keys():
             fallback.append({
                 'command':{
-                    'run':command.revert,
+                    'run':command["revert"],
                 },
                 'name': f'{commandname} revert'
             })

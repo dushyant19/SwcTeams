@@ -21,5 +21,6 @@ services:
 #     - LETSENCRYPT_HOST=
 
 networks:
-  external:
-    nginx-proxy:
+  default:
+    external:
+      name: nginx-proxy

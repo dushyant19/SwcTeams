@@ -9,29 +9,29 @@ services:
       - POSTGRES_DB=<project>
       - POSTGRES_USER=<project>
       - POSTGRES_PASSWORD=<project>
-    volumes: 
-        - <project>_pgdata:/var/lib/postgresql/data
+    volumes:
+      - <project>_pgdata:/var/lib/postgresql/data
 
-  redis :
-    restart: unless-stopped
-    image : redis:alpine
-    container_name: <project>_cache
-    expose :
-      - 6379
+  # redis :
+  #   restart: unless-stopped
+  #   image : redis:alpine
+  #   container_name: <project>_cache
+  #   expose :
+  #     - 6379
 
   web:
     restart: unless-stopped
     build: .
     container_name: <project>_web
-    image : <project>/web
+    image: <project>/web
     command: sh -c "/entrypoint_django"
     volumes:
       - ./src/static:/code/static
       - ./src/media:/code/media
     expose:
       - "8000"
-    env_file: 
-      - "./env"
+    env_file:
+      - "./.env"
     environment:
       - DATABASE_HOST=<project>_db
       - DATABASE_USER=<project>
@@ -47,44 +47,44 @@ services:
 #     - lETSENCRYPT_EMAIL=
 #     - LETSENCRYPT_HOST=
 
+# celery-beat:
+#   restart: unless-stopped
+#   image : <project>/web
+#   command: sh -c "/entrypoint_beat"
+#   env_file:
+#     - "./env"
+#   environment:
+#     - DATABASE_HOST=<project>_db
+#     - DATABASE_USER=<project>
+#     - DATABASE_PASSWORD=<project>
+#     - REDIS_HOST=<project>_cache
+#     - REDIS_PORT=6379
+#     - WAIT_HOSTS=<project>_web:8000,<project>_cache:6379
+#     - WAIT_HOSTS_TIMEOUT=300
+#     - WAIT_SLEEP_INTERVAL=30
+#     - WAIT_HOST_CONNECT_TIMEOUT=30
 
-  celery-beat:
-    restart: unless-stopped
-    image : <project>/web
-    command: sh -c "/entrypoint_beat"
-    env_file: 
-      - "./env"
-    environment:
-      - DATABASE_HOST=<project>_db
-      - DATABASE_USER=<project>
-      - DATABASE_PASSWORD=<project>
-      - REDIS_HOST=<project>_cache
-      - REDIS_PORT=6379
-      - WAIT_HOSTS=<project>_web:8000,<project>_cache:6379
-      - WAIT_HOSTS_TIMEOUT=300
-      - WAIT_SLEEP_INTERVAL=30
-      - WAIT_HOST_CONNECT_TIMEOUT=30
-
-  celery_worker:
-    restart: unless-stopped
-    image : <project>/web
-    command: sh -c "/entrypoint_worker"
-    env_file: 
-      - "./env"
-    environment:
-      - DATABASE_HOST=<project>_db
-      - DATABASE_USER=<project>
-      - DATABASE_PASSWORD=<project>
-      - REDIS_HOST=<project>_cache
-      - REDIS_PORT=6379
-      - WAIT_HOSTS=<project>_web:8000,<project>_cache:6379
-      - WAIT_HOSTS_TIMEOUT=300
-      - WAIT_SLEEP_INTERVAL=30
-      - WAIT_HOST_CONNECT_TIMEOUT=30
+# celery_worker:
+#   restart: unless-stopped
+#   image : <project>/web
+#   command: sh -c "/entrypoint_worker"
+#   env_file:
+#     - "./env"
+#   environment:
+#     - DATABASE_HOST=<project>_db
+#     - DATABASE_USER=<project>
+#     - DATABASE_PASSWORD=<project>
+#     - REDIS_HOST=<project>_cache
+#     - REDIS_PORT=6379
+#     - WAIT_HOSTS=<project>_web:8000,<project>_cache:6379
+#     - WAIT_HOSTS_TIMEOUT=300
+#     - WAIT_SLEEP_INTERVAL=30
+#     - WAIT_HOST_CONNECT_TIMEOUT=30
 
 volumes:
- <project>_pgdata:
+  <project>_pgdata:
 
-networks: 
-  external: 
-    nginx-proxy:
+networks:
+  default:
+    external:
+      name: nginx-proxy

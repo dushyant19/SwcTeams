@@ -1,0 +1,7 @@
+#!/bin/sh
+
+sh /wait
+echo "\n------------DEBUG MODE------------\n"
+python manage.py makemigrations 
+python manage.py migrate
+gunicorn habbit.wsgi:application --bind 0.0.0.0:8000 --log-level=debug --timeout 180  --workers 4 

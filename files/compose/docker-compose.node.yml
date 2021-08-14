@@ -11,14 +11,14 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=<project>
     volumes:
       - <project>_dbdata:/data/db
-    expose: 
+    expose:
       - 27017
-  
-  redis :
+
+  redis:
     restart: unless-stopped
-    image : redis:alpine
+    image: redis:alpine
     container_name: <project>_cache
-    expose :
+    expose:
       - 6379
 
   web:
@@ -41,18 +41,18 @@ services:
       - WAIT_HOSTS_TIMEOUT=300
       - WAIT_SLEEP_INTERVAL=30
       - WAIT_HOST_CONNECT_TIMEOUT=30
-#     - lETSENCRYPT_EMAIL=
-#     - LETSENCRYPT_HOST=
+    #     - lETSENCRYPT_EMAIL=
+    #     - LETSENCRYPT_HOST=
     expose:
       - 3000
     volumes:
       - .:/code
-    command: sh -c "/entrypoint_node" 
-    
+    command: sh -c "/entrypoint_node"
 
 volumes:
   <project>_dbdata:
 
-networks: 
-  external: 
-    nginx-proxy:
+networks:
+  default:
+    external:
+      name: nginx-proxy

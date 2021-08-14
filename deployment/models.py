@@ -3,14 +3,19 @@ from accounts.models import CustomUser
 from django.db.models.signals import pre_save,post_save
 from deployment.deployActions.node import performinitialsetup,redeploy
 from django.dispatch import receiver
+from loguru import logger
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync,sync_to_async
+
+
 
 
 # Create your models here.
 class Framework(models.Model):
     name = models.CharField(max_length=100)
-    logo = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=150)
-    additional_services = models.ManyToManyField('Service', related_name='frameworks_for_additional')
-    default_services = models.ManyToManyField('Service', related_name='frameworks_for_default')
+    logo = models.ImageField(upload_to="frameworks/",blank=True, null=True)
+    additional_services = models.ManyToManyField('Service', related_name='frameworks_for_additional',blank=True)
+    default_services = models.ManyToManyField('Service', related_name='frameworks_for_default',blank=True)
 
 
 class Project(models.Model):
@@ -23,10 +28,11 @@ class Project(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     project_build_version = models.IntegerField(default=0)
     project_description = models.TextField()
-    project_image = models.ImageField(upload_to="projects/", max_length=150)
-    sentry_url = models.URLField(max_length=200,unique=True)
+    project_image = models.ImageField(upload_to="projects/", max_length=150,blank=True, null=True)
+    db=models.CharField(blank=True, null=True,max_length=255)
+    sentry_url = models.URLField(max_length=200,blank=True, null=True)
     platform = models.OneToOneField(Framework, on_delete=models.CASCADE,null=True,blank=True) # what is parent_link?
-
+    
     def __str__(self):
         return self.project_name
 
@@ -36,13 +42,28 @@ class Service(models.Model):
     service_settings = models.JSONField(default=dict) # where is th dict
     projects = models.ManyToManyField(Project, related_name='services')
 
+@logger.catch
+def projectToChannel(project):
+    logger.debug("Sending log Consumer ")
+    async_to_sync(performinitialsetup)(project)
+    message ="Build Started"
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "build_"+project.project_name,
+        {'type': 'build_logs', 'message': message}
+    )
+    
+
 
 @receiver(post_save, sender =Project)
 def my_callback(sender, instance,created, *args, **kwargs):
+    logger.debug(f"Created new project {instance}")
+    logger.debug(f"isCreated : {created}")
     if created:
         try:
-            performinitialsetup(instance)
+            projectToChannel(instance)
         except Exception as e:
+            print("Exception occured ",repr(e))
             repr(e)
     else:
         redeploy(instance)

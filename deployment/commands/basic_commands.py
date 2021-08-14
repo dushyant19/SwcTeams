@@ -1,7 +1,7 @@
 
 def clone(url,name):
     obj = {}
-    obj["run"]=f"git clone ${url} ${name}"
+    obj["run"]=f"git clone {url} {name}"
     return obj
 
 def mkdir(name):
@@ -9,7 +9,13 @@ def mkdir(name):
     obj["run"]=f"mkdir {name}"
     return obj
 
+def touch(name):
+    obj={}
+    obj["run"]=f"touch name"
+    return obj
+
 commands ={
     "mkdir":mkdir,
-    "clone":clone
+    "clone":clone,
+    "touch":touch
 }

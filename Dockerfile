@@ -27,6 +27,6 @@ RUN chmod +x /entrypoint_worker
 
 # always copy files after installing packages
 # docker will cache the packages hence better build time
-COPY ./src /code
+COPY . /code
 EXPOSE 8000
 RUN chmod +x /wait
