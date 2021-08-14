@@ -35,7 +35,7 @@ def network_create(name):
 """========================================================================================="""
 def docker_compose(projectDir,services):
     obj={}
-    obj["run"]=f"cd {projectDir}&& docker-compose up ${services}"
+    obj["run"]=f"cd {projectDir}&& docker-compose up {services} --build"
     obj["revert"]=f"cd {projectDir}&& docker-compose down --volumes"
     return obj
 
@@ -52,7 +52,7 @@ commands = {
     'docker_build_context': docker_build_context,
     'docker_run':docker_run,
     'docker_list':docker_list,
-    'docker_net':network_create
+    'docker_net':network_create,
     "docker_compose_up":docker_compose,
     "docker_compose_down":docker_compose_down
 }

@@ -21,7 +21,7 @@ services:
     expose :
       - 6379
 
- web:
+  web:
     build: .
     image: node:12.13.0-alpine
     container_name: <project>_web

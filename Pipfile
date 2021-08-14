@@ -7,8 +7,9 @@ name = "pypi"
 django = "*"
 pillow = "*"
 channels = "*"
+django-rest-framework = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.6"
+python_version = "3.9"
