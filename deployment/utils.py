@@ -3,8 +3,11 @@ import subprocess
 def cb(err,name,data=""):
     if err:
         print(f"Error in {name}\n")
+    if not err :
+        print(f"Success in {name}\n")
+    print(data)
+    if err:
         raise Exception(err)
-    print(f"Success in {name}")
     return data
 
 
