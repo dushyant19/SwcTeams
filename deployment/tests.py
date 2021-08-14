@@ -8,34 +8,57 @@ def createDjango():
         name="django"
     )
 
-class ProjectDjangoTestCase(TestCase):
+def createReact():
+    return Framework.objects.create(
+        name="react"
+    )
+
+def createNode():
+    return Framework.objects.create(
+        name="nodejs"
+    )
+
+class ProjectCreateTestCase(TestCase):
     project_name=None
     repo_url = None
-    framework = None
+    frameworks ={}
     db=None
     client = None
+    current_framework=None
 
 
     def setUp(self):
-       self.framework=createDjango()
+       self.current_framework="django"
+       self.project_name = "test_project"
+       self.repo_url = {
+           "django":"https://github.com/dushyant19/SwcTeams.git",
+           "react":"",
+           "node":""
+       }
+       self.frameworks["django"]=createDjango()
+       self.frameworks["react"]=createReact()
+       self.frameworks["nodejs"]= createNode()
+       self.db="sqlite"
        self.client = Client()
 
-    def test_django_postgres_project_create(self):
-        self.project_name = "test_project"
-        self.repo_url = "https://github.com/dushyant19/SwcTeams.git"
-        self.db="sqlite"
-        
+    def test_project_create(self):
         data =  {
             "db":self.db,
             "project_name":self.project_name,
-            "repo_url":self.repo_url,
+            "repo_url":self.repo_url[self.current_framework],
             "project_description":"This is a test project",
-            "platform":self.framework.pk
+            "platform":self.frameworks[self.current_framework].pk
         }
         
         response = self.client.post('/project/create/',data=data,content_type="application/json")
         logger.debug(response.data) 
         self.assertEqual(response.status_code, 201)
+    
+    
+
+    
+    
+    
 
 
         
