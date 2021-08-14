@@ -8,7 +8,7 @@ ENV DJANGO_ENV=${DJANGO_ENV} \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 
 
-COPY ./requirements.txt /
+COPY ./src/requirements.txt /
 RUN pip install -r requirements.txt
 # always copy files after installing packages 
 # docker will cache the packages hence better build time

@@ -11,7 +11,7 @@ def mkdir(name):
 
 def touch(name):
     obj={}
-    obj["run"]=f"touch name"
+    obj["run"]=f"touch {name}"
     return obj
 
 commands ={

@@ -29,7 +29,8 @@ class ProjectDjangoTestCase(TestCase):
             "db":self.db,
             "project_name":self.project_name,
             "repo_url":self.repo_url,
-            "project_description":"This is a test project"
+            "project_description":"This is a test project",
+            "platform":self.framework.pk
         }
         
         response = self.client.post('/project/create/',data=data,content_type="application/json")
