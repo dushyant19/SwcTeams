@@ -28,12 +28,12 @@ class ProjectCreateTestCase(TestCase):
 
 
     def setUp(self):
-       self.current_framework="django"
+       self.current_framework="nodejs"
        self.project_name = "test_project_"+self.current_framework
        self.repo_url = {
            "django":"https://github.com/dushyant19/Swc_teams_django_boilerplate.git",
            "react":"https://github.com/KunalSolanke/react-boilerplate.git",
-           "node":"https://github.com/KunalSolanke/Node_boilerplate.git"
+           "nodejs":"https://github.com/KunalSolanke/Node_boilerplate.git"
        }
        self.frameworks["django"]=createDjango()
        self.frameworks["react"]=createReact()

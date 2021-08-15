@@ -2,42 +2,33 @@ version: "3.8"
 
 services:
   db:
-    image: mongo:4.1.8-xenial
-    container_name: <project>_db
+    image: mongo
     restart: unless-stopped
-    env_file: .env
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=<project>
-      - MONGO_INITDB_ROOT_PASSWORD=<project>
+    container_name: <project>_db
     volumes:
       - <project>_dbdata:/data/db
     expose:
       - 27017
 
-  redis:
-    restart: unless-stopped
-    image: redis:alpine
-    container_name: <project>_cache
-    expose:
-      - 6379
+  # redis:
+  #   restart: unless-stopped
+  #   image: redis:alpine
+  #   container_name: <project>_cache
+  #   expose:
+  #     - 6379
 
   web:
     build: .
-    image: node:12.13.0-alpine
     container_name: <project>_web
     restart: unless-stopped
     env_file: .env
     environment:
-      - MONGO_USERNAME=<project>
-      - MONGO_PASSWORD=<project>
-      - MONGO_HOSTNAME=<project>_db
-      - MONGO_PORT=27017
-      - MONGO_DB=<project>
+      - MONGO_URI=mongodb://<project>_db:27017/<project>
       - VIRTUAL_HOST=localhost
       - VIRTUAL_PORT=3000
       - VIRTUAL_PATH=/<project>
       - VIRTUAL_PROTO=http
-      - WAIT_HOSTS=<project>_db:5432
+      - WAIT_HOSTS=<project>_db:27017
       - WAIT_HOSTS_TIMEOUT=300
       - WAIT_SLEEP_INTERVAL=30
       - WAIT_HOST_CONNECT_TIMEOUT=30
@@ -45,8 +36,6 @@ services:
     #     - LETSENCRYPT_HOST=
     expose:
       - 3000
-    volumes:
-      - .:/code
     command: sh -c "/entrypoint_node"
 
 volumes:

@@ -1,21 +1,25 @@
 import subprocess
 
-def cb(err,name,data=""):
+def cb(err,name):
     if err:
         print(f"Error in {name}\n")
-    if not err :
-        print(f"Success in {name}\n")
-    print(data)
-    if err:
-        raise Exception(err)
-    return data
+        raise Exception("Some error occured")
+    
+    print(f"Success in {name}\n")
 
 
 def run_command(command,commandname,cb,fallback):
     command_sh= command["run"]
-    print(f"Running {command_sh} {commandname}")
-    output = subprocess.run(command_sh,shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if(output.returncode==0):
+    print(f"Running {command_sh} {commandname}\n")
+    process = subprocess.Popen(command_sh, shell=True,stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    while True:
+        output = process.stdout.readline()
+        if output == b'' and process.poll() is not None:
+            break
+        if output:
+            print(output.strip(),"\n")
+    rc = process.poll()
+    if(rc==0):
         if "revert" in command.keys():
             fallback.append({
                 'command':{
@@ -23,9 +27,9 @@ def run_command(command,commandname,cb,fallback):
                 },
                 'name': f'{commandname} revert'
             })
-        return cb(None,commandname,output.stdout.decode())
+        return cb(None,commandname)
     else:
-        return cb(output.stderr,commandname)
+        return cb(True,commandname)
 
 
 def run_multiple(commands,blockname,callback,fallback=[]):

@@ -6,7 +6,7 @@ def clone(url,name):
 
 def mkdir(name):
     obj = {}
-    obj["run"]=f"mkdir {name}"
+    obj["run"]=f"mkdir -p {name}"
     return obj
 
 def touch(name):

@@ -9,6 +9,7 @@ pillow = "*"
 channels = "*"
 django-rest-framework = "*"
 loguru = "*"
+shellescape = "*"
 
 [dev-packages]
 

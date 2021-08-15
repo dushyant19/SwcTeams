@@ -13,13 +13,9 @@ server_pass=os.environ.get("SERVER_PASS")
 
 @logger.catch
 def get_project_conf(project):
-    #main_file=project.configs.filter(key="main_file").first()
     env={
         "project_dir":server_base_path+project.project_name,
-        #"main_file":main_file
     }
-    logger.debug("Created env for project")
-    logger.debug(env)
     return env
 
 @logger.catch
@@ -103,15 +99,15 @@ async def performinitialsetup(project):
     env=get_project_conf(project)
     setup=[
         {
-            "command":basic_commands["mkdir"](f"-p {env['project_dir']}"),
+            "command":basic_commands["mkdir"](f"{env['project_dir']}"),
             "name":"make project dir"
         },
         {
-            "command":basic_commands["mkdir"](f"-p {env['project_dir']}/src"),
+            "command":basic_commands["mkdir"](f"{env['project_dir']}/src"),
             "name":"Creating source folder"
         },
         {
-            "command":basic_commands["touch"](f"-p {env['project_dir']}/.env"),
+            "command":basic_commands["touch"](f"{env['project_dir']}/.env"),
             "name":"Creating source folder"
         },
         {
