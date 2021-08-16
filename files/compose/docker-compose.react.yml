@@ -3,18 +3,17 @@ version: "3.8"
 services:
   web:
     build: .
-    image: node:12.13.0-alpine
     container_name: <project>_web
     restart: unless-stopped
     env_file: .env
     expose:
-      - 3000
-    volumes:
-      - .:/code
-    command: serve
+      - 5000
+    ports:
+      - "3001:5000"
+    command: sh -c "/entrypoint_react"
     environment:
       - VIRTUAL_HOST=localhost
-      - VIRTUAL_PORT=3000
+      - VIRTUAL_PORT=5000
       - VIRTUAL_PATH=/<project>
       - VIRTUAL_PROTO=http
 #     - lETSENCRYPT_EMAIL=

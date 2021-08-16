@@ -17,7 +17,7 @@ def run_command(command,commandname,cb,fallback):
         if output == b'' and process.poll() is not None:
             break
         if output:
-            print(output.strip(),"\n")
+            print(output.decode('utf-8').strip(),"\n")
     rc = process.poll()
     if(rc==0):
         if "revert" in command.keys():
