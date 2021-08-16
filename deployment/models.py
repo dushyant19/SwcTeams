@@ -14,9 +14,6 @@ from asgiref.sync import async_to_sync,sync_to_async
 class Framework(models.Model):
     name = models.CharField(max_length=100)
     logo = models.ImageField(upload_to="frameworks/",blank=True, null=True)
-    additional_services = models.ManyToManyField('Service', related_name='frameworks_for_additional',blank=True)
-    default_services = models.ManyToManyField('Service', related_name='frameworks_for_default',blank=True)
-
 
 class Project(models.Model):
     #created_by = models.ForeignKey(CustomUser,related_name='projects',on_delete=models.CASCADE)
@@ -37,10 +34,6 @@ class Project(models.Model):
         return self.project_name
 
 
-class Service(models.Model):
-    service_name = models.CharField(max_length=100) # shouldn't it be a choice field
-    service_settings = models.JSONField(default=dict) # where is th dict
-    projects = models.ManyToManyField(Project, related_name='services')
 
 @logger.catch
 def projectToChannel(project):
