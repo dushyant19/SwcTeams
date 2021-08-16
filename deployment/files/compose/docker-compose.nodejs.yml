@@ -38,7 +38,7 @@ services:
     #     - LETSENCRYPT_HOST=
     expose:
       - 3000
-    command: sh -c "/entrypoint_node"
+    command: sh -c "/entrypoint_nodejs"
 
 volumes:
   <project>_dbdata:

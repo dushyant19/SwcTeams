@@ -22,7 +22,6 @@ class ProjectCreateTestCase(TestCase):
     project_name=None
     repo_url = None
     frameworks ={}
-    db=None
     client = None
     current_framework=None
 
@@ -43,7 +42,6 @@ class ProjectCreateTestCase(TestCase):
 
     def test_project_create(self):
         data =  {
-            "db":self.db,
             "project_name":self.project_name,
             "repo_url":self.repo_url[self.current_framework],
             "project_description":"This is a test project",

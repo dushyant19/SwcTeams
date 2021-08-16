@@ -26,7 +26,7 @@ class Project(models.Model):
     project_build_version = models.IntegerField(default=0)
     project_description = models.TextField()
     project_image = models.ImageField(upload_to="projects/", max_length=150,blank=True, null=True)
-    db=models.CharField(blank=True, null=True,max_length=255)
+    #db=models.CharField(blank=True, null=True,max_length=255) #depracted
     sentry_url = models.URLField(max_length=200,blank=True, null=True)
     platform = models.OneToOneField(Framework, on_delete=models.CASCADE,null=True,blank=True) # what is parent_link?
     

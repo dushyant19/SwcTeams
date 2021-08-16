@@ -29,6 +29,7 @@ class ProjectCreateView(generics.CreateAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectCreateSerializer
 
+@method_decorator([logger.catch], name='dispatch')
 class ProjectUpdateView(generics.UpdateAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectCreateSerializer

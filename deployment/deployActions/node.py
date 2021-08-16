@@ -18,50 +18,29 @@ def get_project_conf(project):
     }
     return env
 
-@logger.catch
-def parse_docker_compose(project,docker_compose):
-  env = get_project_conf(project)
-  global_docker_compose = open(docker_compose,'r')
-  old_text = global_docker_compose.read()
-  newtext = old_text.replace('<project>',project.project_name)
-  project_docker_compose = open(env['project_dir']+'/docker-compose.yaml','w')
-  project_docker_compose.write(newtext)
-  global_docker_compose.close()
-  project_docker_compose.close()
 
 @logger.catch
-def copy_docker_file(project,docker_file):
+def parse_and_create(project,docker_file,file_dest):
   env = get_project_conf(project)
   global_docker_file = open(docker_file,'r')
   text = global_docker_file.read()
   text = text.replace('<project>',project.project_name)
-  project_docker_file = open(env['project_dir']+'/Dockerfile','w')
+  project_docker_file = open(env['project_dir']+'/Dockerfile','w')open(file_dest,'w')
   project_docker_file.write(text)
   global_docker_file.close()
   project_docker_file.close()
 
 
-
 @logger.catch
 def add_docker_file(project):
   env=get_project_conf(project)
-  docker_compose = None
-  dockerfile=None
-  if project.platform.name=="django":
-    dockerfile = os.path.join(Base_Dir,"files","docker_files",'Dockerfile.django')
-    if project.db=="sqlite":
-      docker_compose = os.path.join(Base_Dir,"files","compose",'docker_compose.django_sqlite.yaml')
-    elif project.db=="postgres":
-      docker_compose = os.path.join(Base_Dir,"files","compose",'docker_compose.django_postgres.yaml')
-  elif project.platform.name=="nodejs":
-    dockerfile = os.path.join(Base_Dir,"files","docker_files",'Dockerfile.node')
-    docker_compose = os.path.join(Base_Dir,"files","compose",'docker-compose.node.yml')
-  elif project.platform.name=="react":
-    dockerfile = os.path.join(Base_Dir,"files","docker_files",'Dockerfile.react')
-    docker_compose = os.path.join(Base_Dir,"files","compose",'docker-compose.react.yml')
+  dockerfile = os.path.join(Base_Dir,"deployment","files","docker_files",f"Dockerfile.{project.platform.name}")
+  docker_compose = os.path.join(Base_Dir,"deployment","files","compose",f"docker-compose.{project.platform.name}.yml")
 
-  parse_docker_compose(project,docker_compose)
-  copy_docker_file(project,dockerfile)
+  # Replace <project> and create file in destination folders
+  parse_and_create(project,docker_compose,env['project_dir']+'/Dockerfile')
+  parse_and_create(project,dockerfile,env['project_dir']+'/docker-compose.yaml')
+
 
 @logger.catch
 def containers_setup(project):
@@ -78,7 +57,7 @@ def add_container_entrypoints(project):
   env=get_project_conf(project)
   return [{
     "command":{
-      "run":f"cp files/entrypoints/* {env['project_dir']}",
+      "run":f"cp files/entrypoints/entrypoint_{project.platform.name}* {env['project_dir']}",
     },
     "name":"Copyinng all the entrypoints inside the project dir"
   }]
