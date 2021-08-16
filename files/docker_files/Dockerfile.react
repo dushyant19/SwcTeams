@@ -9,4 +9,4 @@ RUN yarn install
 COPY ./src .
 ADD ./entrypoint_react /entrypoint_react
 RUN chmod +x /entrypoint_react
-RUN yarn run build
+RUN REACT_APP_BASE_URL=<project> yarn run build

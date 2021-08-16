@@ -4,18 +4,20 @@ services:
   web:
     build: .
     container_name: <project>_web
+    image: <project>/web
     restart: unless-stopped
     env_file: .env
     expose:
       - 5000
     ports:
       - "3001:5000"
-    command: sh -c "/entrypoint_react"
     environment:
       - VIRTUAL_HOST=localhost
       - VIRTUAL_PORT=5000
       - VIRTUAL_PATH=/<project>
       - VIRTUAL_PROTO=http
+
+    command: sh -c "/entrypoint_react"
 #     - lETSENCRYPT_EMAIL=
 #     - LETSENCRYPT_HOST=
 

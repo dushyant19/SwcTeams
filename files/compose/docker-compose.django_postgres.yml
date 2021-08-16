@@ -24,7 +24,6 @@ services:
     build: .
     container_name: <project>_web
     image: <project>/web
-    command: sh -c "/entrypoint_django"
     volumes:
       - ./src/static:/code/static
       - ./src/media:/code/media
@@ -44,8 +43,10 @@ services:
       - VIRTUAL_PORT=8000
       - VIRTUAL_PATH=/<project>
       - VIRTUAL_PROTO=http
-#     - lETSENCRYPT_EMAIL=
-#     - LETSENCRYPT_HOST=
+      - BASE_URL=<project>
+  #     - lETSENCRYPT_EMAIL=
+  #     - LETSENCRYPT_HOST=
+  command: sh -c "/entrypoint_django"
 
 # celery-beat:
 #   restart: unless-stopped
