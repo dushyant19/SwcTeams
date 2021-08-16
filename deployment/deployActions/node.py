@@ -25,7 +25,7 @@ def parse_and_create(project,docker_file,file_dest):
   global_docker_file = open(docker_file,'r')
   text = global_docker_file.read()
   text = text.replace('<project>',project.project_name)
-  project_docker_file = open(env['project_dir']+'/Dockerfile','w')open(file_dest,'w')
+  project_docker_file =open(file_dest,'w')
   project_docker_file.write(text)
   global_docker_file.close()
   project_docker_file.close()
@@ -38,8 +38,8 @@ def add_docker_file(project):
   docker_compose = os.path.join(Base_Dir,"deployment","files","compose",f"docker-compose.{project.platform.name}.yml")
 
   # Replace <project> and create file in destination folders
-  parse_and_create(project,docker_compose,env['project_dir']+'/Dockerfile')
-  parse_and_create(project,dockerfile,env['project_dir']+'/docker-compose.yaml')
+  parse_and_create(project,dockerfile,env['project_dir']+'/Dockerfile')
+  parse_and_create(project,docker_compose,env['project_dir']+'/docker-compose.yaml')
 
 
 @logger.catch
@@ -57,7 +57,7 @@ def add_container_entrypoints(project):
   env=get_project_conf(project)
   return [{
     "command":{
-      "run":f"cp files/entrypoints/entrypoint_{project.platform.name}* {env['project_dir']}",
+      "run":f"cp {Base_Dir}/deployment/files/entrypoints/* {env['project_dir']}",
     },
     "name":"Copyinng all the entrypoints inside the project dir"
   }]
@@ -98,12 +98,12 @@ async def performinitialsetup(project):
 
     fallback_arr=[]
     try : 
-      fallback_arr.append({
-          "command":{
-              "run":f"rm -rf {env['project_dir']}",
-          },
-          "name":"reverting all the chnages"
-      })
+      # fallback_arr.append({
+      #     "command":{
+      #         "run":f"rm -rf {env['project_dir']}",
+      #     },
+      #     "name":"reverting all the chnages"
+      # })
       #==================== ADD ALL THE NECCESSARY DOCKER FILES TO PROJECT DIR ===========================#
       run_multiple(setup,"===================BASIC FILE SETUP ====================",cb)
       try:

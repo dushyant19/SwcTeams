@@ -1,15 +1,15 @@
 from rest_framework import serializers
 from .models import *
 
-class ServiceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Service
-        fields='__all__'
+# class ServiceSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model=Service
+#         fields='__all__'
 
 
 class FrameWorkSerializer(serializers.ModelSerializer):
-    additional_services = ServiceSerializer(many=True, required=False)
-    default_services = ServiceSerializer(many=True, required=False)
+    # additional_services = ServiceSerializer(many=True, required=False)
+    # default_services = ServiceSerializer(many=True, required=False)
     class Meta:
         model=Framework
         fields='__all__'
