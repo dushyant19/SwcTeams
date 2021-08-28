@@ -1,4 +1,0 @@
-#!/bin/sh
-
-sh /wait
-celery -A core beat -l info
