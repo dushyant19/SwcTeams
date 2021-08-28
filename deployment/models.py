@@ -8,8 +8,6 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync,sync_to_async
 
 
-
-
 # Create your models here.
 class Framework(models.Model):
     name = models.CharField(max_length=100)
@@ -18,6 +16,12 @@ class Framework(models.Model):
 class Project(models.Model):
     #created_by = models.ForeignKey(CustomUser,related_name='projects',on_delete=models.CASCADE)
     #members = models.ManyToManyField(CustomUser)
+    class ProjectStateChoices(models.TextChoices):
+        IDLE="I"
+        BUILDING ="B"
+        RUNNING = "R"
+
+    project_state = models.CharField(max_length=255,default=ProjectStateChoices.choices.IDLE,choices=ProjectStateChoices.choices)
     project_name = models.CharField(max_length=200,unique=True)
     repo_url = models.URLField(unique=True)
     database_configured = models.BooleanField(default=False)
