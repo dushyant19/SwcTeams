@@ -21,7 +21,7 @@ class Project(models.Model):
         BUILDING ="B"
         RUNNING = "R"
 
-    project_state = models.CharField(max_length=255,default=ProjectStateChoices.choices.IDLE,choices=ProjectStateChoices.choices)
+    project_state = models.CharField(max_length=255,default=ProjectStateChoices.IDLE,choices=ProjectStateChoices.choices)
     project_name = models.CharField(max_length=200,unique=True)
     repo_url = models.URLField(unique=True)
     database_configured = models.BooleanField(default=False)
@@ -37,12 +37,12 @@ class Project(models.Model):
     def __str__(self):
         return self.project_name
 
-
+from .tasks import create_project
 
 @logger.catch
 def projectToChannel(project):
     logger.debug("Sending log Consumer ")
-    async_to_sync(performinitialsetup)(project)
+    create_project.delay(project.id)
     message ="Build Started"
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(

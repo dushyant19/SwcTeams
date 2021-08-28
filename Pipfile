@@ -10,6 +10,11 @@ channels = "*"
 django-rest-framework = "*"
 loguru = "*"
 shellescape = "*"
+celery = "*"
+django-celery-results = "*"
+django-redis = "*"
+psycopg2 = "*"
+yapf = "*"
 
 [dev-packages]
 
