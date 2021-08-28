@@ -98,12 +98,12 @@ async def performinitialsetup(project):
 
     fallback_arr=[]
     try : 
-      # fallback_arr.append({
-      #     "command":{
-      #         "run":f"rm -rf {env['project_dir']}",
-      #     },
-      #     "name":"reverting all the chnages"
-      # })
+      fallback_arr.append({
+          "command":{
+              "run":f"rm -rf {env['project_dir']}",
+          },
+          "name":"reverting all the chnages"
+      })
       #==================== ADD ALL THE NECCESSARY DOCKER FILES TO PROJECT DIR ===========================#
       run_multiple(setup,"===================BASIC FILE SETUP ====================",cb)
       try:

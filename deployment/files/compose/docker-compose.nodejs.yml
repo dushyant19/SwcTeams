@@ -3,7 +3,6 @@ version: "3.8"
 services:
   db:
     image: mongo
-    restart: unless-stopped
     container_name: <project>_db
     volumes:
       - <project>_dbdata:/data/db
@@ -11,7 +10,6 @@ services:
       - 27017
 
   # redis:
-  #   restart: unless-stopped
   #   image: redis:alpine
   #   container_name: <project>_cache
   #   expose:
@@ -19,9 +17,8 @@ services:
 
   web:
     build: .
-    image: <project>/web
+    image: <project>_web
     container_name: <project>_web
-    restart: unless-stopped
     env_file: .env
     environment:
       - MONGO_URI=mongodb://<project>_db:27017/<project>

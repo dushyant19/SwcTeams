@@ -2,7 +2,6 @@ version: "3.8"
 
 services:
   postgres:
-    restart: unless-stopped
     container_name: <project>_db
     image: postgres
     environment:
@@ -13,14 +12,12 @@ services:
       - <project>_pgdata:/var/lib/postgresql/data
 
   # redis :
-  #   restart: unless-stopped
   #   image : redis:alpine
   #   container_name: <project>_cache
   #   expose :
   #     - 6379
 
   web:
-    restart: unless-stopped
     build: .
     container_name: <project>_web
     image: <project>/web
@@ -49,7 +46,6 @@ services:
   command: sh -c "/entrypoint_django"
 
 # celery-beat:
-#   restart: unless-stopped
 #   image : <project>/web
 #   command: sh -c "/entrypoint_beat"
 #   env_file:

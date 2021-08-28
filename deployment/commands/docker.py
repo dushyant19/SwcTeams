@@ -35,7 +35,7 @@ def network_create(name):
 """========================================================================================="""
 def docker_compose(projectDir,services):
     obj={}
-    obj["run"]=f"cd {projectDir}&& docker-compose up {services} --build"
+    obj["run"]=f"cd {projectDir} && docker-compose down --volumes && docker-compose up -d --build"
     obj["revert"]=f"cd {projectDir}&& docker-compose down --volumes"
     return obj
 

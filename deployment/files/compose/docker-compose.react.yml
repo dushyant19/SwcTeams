@@ -4,8 +4,7 @@ services:
   web:
     build: .
     container_name: <project>_web
-    image: <project>/web
-    restart: unless-stopped
+    image: <project>_web
     env_file: .env
     expose:
       - 5000
